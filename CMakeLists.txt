@@ -1,18 +1,22 @@
 cmake_minimum_required(VERSION 3.15)
-project(traffic_api)
+project(traffic_project)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 1. Include Crow
-include_directories(${CMAKE_SOURCE_DIR})
+# Point CMake to Homebrew's general folder (for Asio) AND the MySQL folders
+include_directories(
+    /opt/homebrew/include 
+    /opt/homebrew/include/mysql 
+    /opt/homebrew/opt/mysql-client/include/mysql
+)
+link_directories(
+    /opt/homebrew/lib 
+    /opt/homebrew/opt/mysql-client/lib
+)
 
-# 2. Tell CMake where Homebrew installed ASIO and MySQL on your Mac
-include_directories(/opt/homebrew/include)  # <-- Added this line for ASIO!
-include_directories(/opt/homebrew/opt/mysql-client/include/mysql)
-link_directories(/opt/homebrew/opt/mysql-client/lib)
+# Add your executable
+add_executable(traffic_api main.cpp)
 
-# 3. Add your main executable
-add_executable(traffic_server main.cpp)
-
-# 4. Link the libraries
-target_link_libraries(traffic_server mysqlclient pthread)
+# Link the standard mysql client library
+target_link_libraries(traffic_api mysqlclient)
